@@ -1,14 +1,78 @@
-import { Wrapper, Button } from "./Main.styled";
-import { Field } from "../Field/Field";
+import {
+  Wrapper,
+  ButtonTop,
+  ButtonRight,
+  ButtonBottom,
+  ButtonLeft,
+  IconTop,
+  IconLeft,
+  IconRight,
+  IconBottom,
+} from "./Main.styled";
+import { Tree } from "../Tree/Tree";
 
-export const Main = () => {
+interface MainProps {
+  transitCount(value: number): any;
+zoomValue: number;
+}
+
+export const Main = ({ transitCount, zoomValue }: MainProps) => {
+  function onClickTop() {
+    const tree = document.querySelector(".tree") as HTMLDivElement | null;
+
+    if (tree != null) {
+      const position = tree.offsetTop;
+      tree.style.top = `${position - 10}px`;
+    }
+  }
+
+  function onClickRight() {
+    const tree = document.querySelector(".tree") as HTMLDivElement | null;
+
+    if (tree != null) {
+      const position = tree.offsetLeft;
+      tree.style.left = `${position + 10}px`;
+    }
+  }
+
+  function onClickBottom() {
+    const tree = document.querySelector(".tree") as HTMLDivElement | null;
+
+    if (tree != null) {
+      const position = tree.offsetTop;
+      tree.style.top = `${position + 10}px`;
+    }
+  }
+
+  function onClickLeft() {
+    const tree = document.querySelector(".tree") as HTMLDivElement | null;
+
+    if (tree != null) {
+      const position = tree.offsetLeft;
+      tree.style.left = `${position - 10}px`;
+    }
+  }
+
+  function dragOver(e: React.DragEvent<HTMLDivElement>) {
+    e.preventDefault();
+    e.dataTransfer.dropEffect = "move";
+  }
+
   return (
-    <Wrapper>
-      <Button>Top</Button>
-      <Button>Left</Button>
-      <Button>Right</Button>
-      <Field />
-      <Button>Bottom</Button>
+    <Wrapper onDragOver={dragOver}>
+      <ButtonTop onClick={onClickTop}>
+        <IconTop />
+      </ButtonTop>
+      <ButtonRight onClick={onClickRight}>
+        <IconRight />
+      </ButtonRight>
+      <ButtonBottom onClick={onClickBottom}>
+        <IconBottom />
+      </ButtonBottom>
+      <ButtonLeft onClick={onClickLeft}>
+        <IconLeft />
+      </ButtonLeft>
+      <Tree transitCount={transitCount} zoomValue={zoomValue}/>
     </Wrapper>
   );
 };
