@@ -13,7 +13,7 @@ width: 100vw;
 `;
 
 export const Wrapper = styled.div`
-  cursor: move;
+  cursor: auto;
 
   position: absolute;
   left: 50%;

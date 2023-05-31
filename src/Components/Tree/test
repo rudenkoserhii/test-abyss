@@ -1,523 +1,6 @@
-// import React, { useState } from "react";
-// import {
-//   Wrapper,
-//   ButtonAdd,
-//   ButtonEdit,
-//   ButtonDelete,
-//   IconAdd,
-//   IconEdit,
-//   IconDone,
-//   IconDelete,
-//   Label,
-//   Input,
-//   Block,
-//   Line,
-//   Column,
-// } from "./Tree.styled";
-// import { nanoid } from "nanoid";
-
-// interface TreeProps {
-//   transitCount(value: number): any;
-//   transitCategoryTree(value: any): any;
-// uniqueIds: any;
-// }
-
-// export const Tree = ({ transitCount, transitCategoryTree, uniqueIds }: TreeProps) => {
-//   const [xStart, setXStart] = useState<number>(0);
-//   const [yStart, setYStart] = useState<number>(0);
-//   const [leftStart, setLeftStart] = useState<number>(0);
-//   const [topStart, setTopStart] = useState<number>(0);
-//   const [state, setState] = useState<any>();
-//   const [width, setWidth] = useState<string>("auto");
-//   const [left, setLeft] = useState<string>("0");
-//   // const [categoryIdForRender, setCategoryIdForRender] = useState<string>('first');
-
-//   const [categoryTree, setCategoryTree] = useState<any[]>([
-//     {
-//       id: "first",
-//       buttonAdd: true,
-//       buttonEdit: false,
-//       buttonDelete: false,
-//       children: [],
-//     },
-//   ]);
-
-// transitCategoryTree(categoryTree);
-
-//   const onSubmit = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
-//     e.preventDefault();
-//     let obj: any = {};
-//     const name = (e.currentTarget.parentElement?.firstChild as HTMLInputElement)
-//       .name;
-//     const value = (
-//       e.currentTarget.parentElement?.firstChild as HTMLInputElement
-//     ).value;
-//     obj[`${name}`] = value;
-
-//     setState((prevState: any) => Object.assign({}, prevState, obj));
-//   };
-
-//   const handleAddCategory = (
-//     e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
-//     parentId: any
-//   ) => {
-
-//     const newCategory = {
-//       id: nanoid(),
-//       buttonAdd: false,
-//       buttonEdit: false,
-//       buttonDelete: false,
-//       children: [],
-//     };
-
-//     setCategoryTree((prevTree: any) => {
-//       const updatedTree = [...prevTree];
-//       const parentCategory = findCategoryById(updatedTree, parentId);
-
-//       if (parentCategory) {
-//         parentCategory.children.push(newCategory);
-//       }
-//       return updatedTree;
-//     });
-//   };
-
-//   const findCategoryById = (tree: any, categoryId: string) => {
-//     for (const category of tree) {
-
-//       if (category.id === categoryId) {
-//         return category;
-//       } else if (category.children.length > 0) {
-//         const subcategory: any = findCategoryById(
-//           category.children,
-//           categoryId
-//         );
-//         if (subcategory) {
-//           return subcategory;
-//         }
-//       }
-//     }
-
-//     return null;
-//   };
-
-//   function findParentCategoryForDelete(tree: any, id: string) {
-//     for (let i = 0; i < tree.length; i++) {
-//       if (tree[i].id === id) {
-//         return tree[i];
-//       } else if (tree[i].children.length > 0) {
-//         const subcategory: any = findParentCategoryForDelete(
-//           tree[i].children,
-//           id
-//         );
-//         if (subcategory) {
-//           return subcategory;
-//         }
-//       }
-//     }
-//   }
-
-//   function onDeleteClick(e: React.MouseEvent<HTMLButtonElement, MouseEvent>) {
-//     const idInput = (
-//       e.currentTarget.parentElement?.parentElement?.parentElement?.parentElement
-//         ?.firstChild as Element
-//     ).id.split("-")[1];
-//     const idButton = (e.currentTarget.previousSibling as Element).id;
-//     if (
-//       (e.currentTarget.previousSibling as Element).classList.contains("edit")
-//     ) {
-//       setCategoryTree((prevTree: any) => {
-//         const updatedTree = [...prevTree];
-//         const parentCategory = findParentCategoryForDelete(
-//           updatedTree,
-//           idInput
-//         );
-
-//         if (parentCategory) {
-//           parentCategory.children.splice(
-//             parentCategory.children.findIndex((el: any) => el.id === idButton),
-//             1
-//           );
-//         }
-//         return updatedTree;
-//       });
-//     } else {
-//       (e.currentTarget.parentElement as HTMLFormElement).reset();
-//     }
-//   }
-
-//   function onEditClick(e: React.MouseEvent<HTMLButtonElement, MouseEvent>) {
-//     onSubmit(e);
-//     // (e.currentTarget.parentElement?.firstChild as HTMLInputElement).value = state[`${(e.currentTarget as HTMLButtonElement).id}`];
-//     // document.querySelector(`#${(e.currentTarget as HTMLButtonElement).id}`)?.classList.add('edit')
-//     // (e.currentTarget as Element).classList.add('edit')
-//     const id = e.currentTarget.id;
-
-//     setCategoryTree((prevTree: any) => {
-//       const updatedTree = [...prevTree];
-//       const category = findCategoryById(updatedTree, id);
-//       // console.log(category)
-//       if (category) {
-//         category.buttonAdd = true;
-//         category.buttonEdit = true;
-//         category.buttonDelete = true;
-//       }
-//       return updatedTree;
-//     });
-//   }
-
-// const renderedCategories = categoryTree.map((category, index) => {
-//   const categoryId = uniqueIds[index];
-//   setNet(categoryId);
-//   return renderCategory(category, categoryId);
-// });
-
-//   const renderCategory = (category: any, categoryId: string) => {
-//     // console.log(category)
-//     // setTimeout(() => setNet(category), 50);
-
-//     return (
-//       <Column key={categoryId} id={`column-${category.id}`} className="column">
-//         <Block
-//           className={"block"}
-//           // onSubmit={(e: React.FormEvent<HTMLFormElement>) => onSubmit(e)}
-//           id={`block-${category.id}`}
-//         >
-//           <Label id={`label-${category.id}`} className="label">
-//             <Input
-//               type="text"
-//               name={category.id}
-//               id={category.id}
-//               autoFocus
-//               // value={() => checkValue(category.id)}
-//               // defaultValue={category.id === 'first' ? "Categories" : "Category Name"}
-//               placeholder={
-//                 category.id === "first" ? "Categories" : "Category Name"
-//               }
-//               // onClick={(e: React.ChangeEvent<HTMLInputElement>) => handleChange(e)
-//               // }
-//               // onFocus={(e: React.FocusEvent<HTMLInputElement, Element>) =>
-//               //   (e.target.value = "")
-//               // }
-//               disabled={category.id === "first" ? true : false}
-//             />
-//           </Label>
-//           <ButtonAdd
-//             type="button"
-//             // style={{ display: `${category.id !== "first" ? "none" : 'flex'}` }}
-//             className={
-//               category.id !== "first" && !category.buttonAdd
-//                 ? "btn is-hidden"
-//                 : "btn"
-//             }
-//             onClick={(e: React.MouseEvent<HTMLButtonElement, MouseEvent>) =>
-//               handleAddCategory(e, category.id)
-//             }
-//           >
-//             <IconAdd />
-//           </ButtonAdd>
-//           <ButtonEdit
-//             id={category.id}
-//             type="button"
-//             style={{ display: `${category.id === "first" && "none"}` }}
-//             className={category.buttonEdit ? "btn edit" : "btn"}
-//             onClick={(e: React.MouseEvent<HTMLButtonElement, MouseEvent>) =>
-//               onEditClick(e)
-//             }
-//           >
-//             <IconEdit
-//               style={{ display: `${!category.buttonEdit && "none"}` }}
-//             />
-//             <IconDone style={{ display: `${category.buttonEdit && "none"}` }} />
-//           </ButtonEdit>
-//           <ButtonDelete
-//             id={category.id}
-//             type="button"
-//             style={{ display: `${category.id === "first" && "none"}` }}
-//             className={category.buttonDelete ? "btn delete" : "btn"}
-//             onClick={(e: React.MouseEvent<HTMLButtonElement, MouseEvent>) =>
-//               onDeleteClick(e)
-//             }
-//           >
-//             <IconDelete />
-//           </ButtonDelete>
-//         </Block>
-
-//         {category.children.length > 0 && (
-//           <Line
-//             id={`line-${category.id}`}
-//             className="line"
-//             width={width}
-//             left={left}
-//           >
-//             {category.children.map((child: any, index: number) => {
-//   const categoryId = uniqueIds[index];
-//   setNet(categoryId);
-//   return renderCategory(child, categoryId);
-// })}
-//           </Line>
-//         )}
-//       </Column>
-//     );
-//   };
-
-//   function setNet(categoryIdForRender: string) {
-//     // console.log(category)
-//     // debugger
-// // useEffect(() => {
-//     const block = document.querySelector<HTMLElement>(`#block-${categoryIdForRender}`);
-//     const label = document.querySelector<HTMLElement>(`#label-${categoryIdForRender}`);
-//     const line = document.querySelector<HTMLElement>(`#line-${categoryIdForRender}`);
-
-//     console.log(line);
-//     if (block != null && label != null) {
-//       if (categoryIdForRender === "first") {
-//         label.classList.add("firstBlock");
-//       }
-//       if (categoryIdForRender !== "first") {
-//         label.classList.add("child");
-//       }
-//       if (block?.nextSibling) {
-//         label.classList.add("parent");
-//       }
-//     }
-
-//     if (block != null && line != null) {
-//       if (line?.children.length === 1) {
-//         const left =
-//           ((
-//             line.children[0].firstChild?.firstChild as HTMLLabelElement
-//           ).getBoundingClientRect().right -
-//             (
-//               line.children[0].firstChild?.firstChild as HTMLLabelElement
-//             ).getBoundingClientRect().left) /
-//           2;
-//         const width =
-//           ((
-//             line.previousSibling?.firstChild as HTMLLabelElement
-//           ).getBoundingClientRect().right +
-//             (
-//               line.previousSibling?.firstChild as HTMLLabelElement
-//             ).getBoundingClientRect().left) /
-//             2 -
-//           ((
-//             line.children[0].firstChild?.firstChild as HTMLLabelElement
-//           ).getBoundingClientRect().right +
-//             (
-//               line.children[0].firstChild?.firstChild as HTMLLabelElement
-//             ).getBoundingClientRect().left) /
-//             2;
-//         setWidth(`${width}px`);
-//         setLeft(`${left}px`);
-//       }
-//       if (line?.children.length === 2) {
-//         const left =
-//           ((
-//             line.children[0].firstChild?.firstChild as HTMLLabelElement
-//           ).getBoundingClientRect().right -
-//             (
-//               line.children[0].firstChild?.firstChild as HTMLLabelElement
-//             ).getBoundingClientRect().left) /
-//           2;
-//         const width =
-//           ((
-//             line.children[1].firstChild?.firstChild as HTMLLabelElement
-//           ).getBoundingClientRect().right +
-//             (
-//               line.children[1].firstChild?.firstChild as HTMLLabelElement
-//             ).getBoundingClientRect().left) /
-//             2 -
-//           ((
-//             line.children[0].firstChild?.firstChild as HTMLLabelElement
-//           ).getBoundingClientRect().right +
-//             (
-//               line.children[0].firstChild?.firstChild as HTMLLabelElement
-//             ).getBoundingClientRect().left) /
-//             2;
-
-//         setWidth(`${width}px`);
-//         setLeft(`${left}px`);
-//       }
-
-//       if (line?.children.length > 2) {
-//         const left =
-//           ((
-//             line.children[0].firstChild?.firstChild as HTMLLabelElement
-//           ).getBoundingClientRect().right -
-//             (
-//               line.children[0].firstChild?.firstChild as HTMLLabelElement
-//             ).getBoundingClientRect().left) /
-//           2;
-//         const width =
-//           ((
-//             line.lastChild?.firstChild?.firstChild as HTMLLabelElement
-//           ).getBoundingClientRect().right +
-//             (
-//               line.lastChild?.firstChild?.firstChild as HTMLLabelElement
-//             ).getBoundingClientRect().left) /
-//             2 -
-//           ((
-//             line.children[0].firstChild?.firstChild as HTMLLabelElement
-//           ).getBoundingClientRect().right +
-//             (
-//               line.children[0].firstChild?.firstChild as HTMLLabelElement
-//             ).getBoundingClientRect().left) /
-//             2;
-
-//         setWidth(`${width}px`);
-//         setLeft(`${left}px`);
-//       }
-//     }
-// }
-
-//   function dragStart(e: React.DragEvent<HTMLDivElement>) {
-//     setXStart(e.clientX);
-//     setYStart(e.clientY);
-
-//     const tree = document.querySelector(".tree") as HTMLDivElement | null;
-
-//     if (tree != null) {
-//       setLeftStart(tree.offsetLeft);
-//       setTopStart(tree.offsetTop);
-//     }
-//   }
-
-//   function dragEnd(e: React.DragEvent<HTMLDivElement>) {
-//     e.preventDefault();
-
-//     const xMove = e.clientX - xStart;
-//     const yMove = e.clientY - yStart;
-
-//     const tree = document.querySelector(".tree") as HTMLDivElement | null;
-
-//     if (tree != null && tree.offsetParent != null) {
-//       const positionLeft = tree.offsetLeft + xMove;
-//       const maxRight = tree.offsetParent.clientWidth;
-//       const positionTop = tree.offsetTop + yMove;
-//       const maxBottom = tree.offsetParent.clientHeight;
-
-//       if (
-//         positionLeft < 0 ||
-//         positionLeft > maxRight ||
-//         positionTop < 0 ||
-//         positionTop > maxBottom
-//       ) {
-//         tree.style.left = `${leftStart}px`;
-//         tree.style.top = `${topStart}px`;
-//       } else {
-//         tree.style.left = `${positionLeft}px`;
-//         tree.style.top = `${positionTop}px`;
-//       }
-//     }
-//   }
-
-
-//   return (
-//     <Wrapper
-//       className="tree"
-//       draggable={true}
-//       onDragStart={dragStart}
-//       onDragEnd={dragEnd}
-//     >
-//       <Column>
-//         {renderedCategories}
-//       </Column>
-//     </Wrapper>
-//   );
-// };
-
-
-// import React, { useState } from "react";
-// import {
-//   Wrapper,
-//   ButtonTop,
-//   ButtonRight,
-//   ButtonBottom,
-//   ButtonLeft,
-//   IconTop,
-//   IconLeft,
-//   IconRight,
-//   IconBottom,
-// } from "./Main.styled";
-// import { Tree } from "../Tree/Tree";
-// import { nanoid } from "nanoid";
-
-// interface MainProps {
-//   transitCount(value: number): any;
-// }
-
-// export const Main = ({ transitCount }: MainProps) => {
-// const [categoryTree, setCategoryTree] = useState<any[]>([]);
-
-// const uniqueIds = categoryTree.map(() => nanoid());
-
-//   function onClickTop() {
-//     const tree = document.querySelector(".tree") as HTMLDivElement | null;
-
-//     if (tree != null) {
-//       const position = tree.offsetTop;
-//       tree.style.top = `${position - 10}px`;
-//     }
-//   }
-
-//   function onClickRight() {
-//     const tree = document.querySelector(".tree") as HTMLDivElement | null;
-
-//     if (tree != null) {
-//       const position = tree.offsetLeft;
-//       tree.style.left = `${position + 10}px`;
-//     }
-//   }
-
-//   function onClickBottom() {
-//     const tree = document.querySelector(".tree") as HTMLDivElement | null;
-
-//     if (tree != null) {
-//       const position = tree.offsetTop;
-//       tree.style.top = `${position + 10}px`;
-//     }
-//   }
-
-//   function onClickLeft() {
-//     const tree = document.querySelector(".tree") as HTMLDivElement | null;
-
-//     if (tree != null) {
-//       const position = tree.offsetLeft;
-//       tree.style.left = `${position - 10}px`;
-//     }
-//   }
-
-//   function dragOver(e: React.DragEvent<HTMLDivElement>) {
-//     e.preventDefault();
-//     e.dataTransfer.dropEffect = "move";
-//   }
-
-//   return (
-//     <Wrapper onDragOver={dragOver}>
-//       <ButtonTop onClick={onClickTop}>
-//         <IconTop />
-//       </ButtonTop>
-//       <ButtonRight onClick={onClickRight}>
-//         <IconRight />
-//       </ButtonRight>
-//       <ButtonBottom onClick={onClickBottom}>
-//         <IconBottom />
-//       </ButtonBottom>
-//       <ButtonLeft onClick={onClickLeft}>
-//         <IconLeft />
-//       </ButtonLeft>
-//       <Tree transitCount={transitCount} transitCategoryTree={(value) => setCategoryTree(value)} uniqueIds={uniqueIds}/>
-//     </Wrapper>
-//   );
-// };
-
-
-
-
-import React, { useEffect, useState } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import {
   Wrapper,
-  // FirstBlock,
-  // Name,
   ButtonAdd,
   ButtonEdit,
   ButtonDelete,
@@ -532,46 +15,90 @@ import {
   Column,
 } from "./Tree.styled";
 import { nanoid } from "nanoid";
+import { Modal } from "../Modal/Modal";
+import { randomColor } from "../../utils/randomColor";
+import { concatObject } from "../../utils/concatObject";
+import { Collection } from "typescript";
 
 interface TreeProps {
   transitCount(value: number): any;
+  zoomValue: number;
 }
 
-export const Tree = ({ transitCount }: TreeProps) => {
+export const Tree = ({ transitCount, zoomValue }: TreeProps) => {
+  const firstColor = randomColor();
+
   const [xStart, setXStart] = useState<number>(0);
   const [yStart, setYStart] = useState<number>(0);
   const [leftStart, setLeftStart] = useState<number>(0);
   const [topStart, setTopStart] = useState<number>(0);
-  const [state, setState] = useState<any>();
-  const [width, setWidth] = useState<string>("auto");
-  const [left, setLeft] = useState<string>("0");
-
+  const [width, setWidth] = useState<any>({});
+  const [left, setLeft] = useState<any>({});
+  const [classLabel, setClassLabel] = useState<any>({});
+  const [color, setColor] = useState<any>({
+    1: firstColor,
+  });
+  const [disablessInput, setDisablessInput] = useState<any>({});
+  const [disablessBtn, setDisablessBtn] = useState<any>({ 'buttonA-first': false });
+  const [widthInput, setWidthInput] = useState<any>({});
+  const [inputValue, setInputValue] = useState<any>({ first: "Categories" });
+  const [columnGap, setColumnGap] = useState<any>({ first: "70px" });
+  const [modalVisibility, setModalVisibility] = useState<any>([
+    false,
+    null,
+    "",
+  ]);
+  const [type, setType] = useState<string>("category");
   const [categoryTree, setCategoryTree] = useState<any[]>([
     {
       id: "first",
       buttonAdd: true,
       buttonEdit: false,
       buttonDelete: false,
+      globalLine: 1,
+      type: type,
       children: [],
     },
   ]);
+const [focused, setFocused] = useState<boolean>(false);
+const [currentCategoryId, setCurrentCategoryId] = useState<string>('');
 
-  const onSubmit = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
-    e.preventDefault();
-    let obj: any = {};
-    const name = (e.currentTarget.parentElement?.firstChild as HTMLInputElement)
-      .name;
-    const value = (
-      e.currentTarget.parentElement?.firstChild as HTMLInputElement
-    ).value;
-    obj[`${name}`] = value;
-
-    setState((prevState: any) => Object.assign({}, prevState, obj));
-  };
+  function countParents(e: React.MouseEvent<HTMLButtonElement, MouseEvent>) {
+    let parent: any = e.target;
+    let i: number = 1;
+    while (parent.id !== "column-first") {
+      parent = parent["parentElement"];
+      if (parent.id.split("")[0] === "c") {
+        i += 1;
+      }
+    }
+    if (!color || !Object.keys(color).includes(`${i}`)) {
+      setColor((prev: any) => concatObject(prev, i, randomColor()));
+    }
+    return i;
+  }
 
   const handleAddCategory = (
     e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
-    parentId: any
+    parentId: any,
+    value: number
+  ) => {
+    const backdrop = document.getElementById("backdrop");
+    if (backdrop != null) {
+      backdrop.style.pointerEvents = "none";
+    }
+
+    if (value + 1 > 2) {
+      setModalVisibility([true, e, parentId]);
+    } else {
+      createCategory(e, parentId, type);
+    }
+  };
+
+  const createCategory = (
+    e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
+    parentId: any,
+    type: string
   ) => {
 
     const newCategory = {
@@ -579,8 +106,11 @@ export const Tree = ({ transitCount }: TreeProps) => {
       buttonAdd: false,
       buttonEdit: false,
       buttonDelete: false,
+      globalLine: countParents(e),
+      type: type,
       children: [],
     };
+
 
     setCategoryTree((prevTree: any) => {
       const updatedTree = [...prevTree];
@@ -591,6 +121,57 @@ export const Tree = ({ transitCount }: TreeProps) => {
       }
       return updatedTree;
     });
+      setDisablessBtn((prev: any) =>
+        Object.fromEntries(
+          Object.entries(prev).map((el: any) =>
+            (el[0] !== `buttonE-${newCategory.id}` || el[0] !== `buttonD-${newCategory.id}`)
+              ? [el[0], true]
+              : el
+          )
+        )
+      );
+setDisablessBtn((prev: any) => concatObject(prev, `buttonA-${newCategory.id}`, true));
+setDisablessBtn((prev: any) => concatObject(prev, `buttonE-${newCategory.id}`, false));
+setDisablessBtn((prev: any) => concatObject(prev, `buttonD-${newCategory.id}`, false));
+
+        setDisablessInput((prev: any) => concatObject(prev, newCategory.id, false));
+setCurrentCategoryId(newCategory.id)
+setFocused(true)
+  };
+
+
+
+useEffect(() => {
+if(!focused) {
+return
+}
+
+const checkFocus = (e: MouseEvent) => {
+
+if((e.target as HTMLButtonElement).id !== `input-${currentCategoryId}` || (e.target as HTMLButtonElement).id !== `buttonE-${currentCategoryId}` || (e.target as HTMLButtonElement).id !== `buttonD-${currentCategoryId}`) {
+console.log('hello')
+const input = document.getElementById(`input-${currentCategoryId}`);
+if(input != null) {(input as HTMLInputElement).focus()}
+}
+}
+
+
+window.addEventListener('click', checkFocus)
+return () => window.removeEventListener('click', checkFocus)
+
+}, [currentCategoryId, focused])
+
+  const onType = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+    setModalVisibility((prev: any) =>
+      prev.map((i: any, index: number) => (index === 0 ? false : i))
+    );
+    const tempType = (e.target as HTMLButtonElement).innerText.toLowerCase();
+    setType(tempType);
+
+    createCategory(modalVisibility[1], modalVisibility[2], tempType);
+    if ((e.target as HTMLButtonElement).innerText.toLowerCase() === "service") {
+      transitCount(1);
+    }
   };
 
   const findCategoryById = (tree: any, categoryId: string) => {
@@ -627,15 +208,37 @@ export const Tree = ({ transitCount }: TreeProps) => {
     }
   }
 
+  const findServices = (category: any, count: number) => {
+    for (let i = 0; i < category.length; i++) {
+      if (category[i].type === "service") {
+        count = count + 1;
+      }
+      if (category[i].children.length > 0) {
+        count = findServices(category[i].children, count);
+      }
+    }
+    return count;
+  };
+
   function onDeleteClick(e: React.MouseEvent<HTMLButtonElement, MouseEvent>) {
+    console.log("click");
     const idInput = (
-      e.currentTarget.parentElement?.parentElement?.parentElement?.parentElement
-        ?.firstChild as Element
-    ).id.split("-")[1];
-    const idButton = (e.currentTarget.previousSibling as Element).id;
+      (e.currentTarget as HTMLButtonElement).parentElement?.parentElement
+        ?.parentElement?.parentElement?.firstChild as Element
+    ).id.slice(6);
+    const idButton = (
+      (e.currentTarget as HTMLButtonElement).previousSibling as Element
+    ).id.slice(8);
     if (
-      (e.currentTarget.previousSibling as Element).classList.contains("edit")
+      (
+        (e.currentTarget as HTMLButtonElement).previousSibling as Element
+      ).classList.contains("edit")
     ) {
+      const count = findServices([findCategoryById(categoryTree, idButton)], 0);
+      if (count > 0) {
+        transitCount(-1 * count);
+      }
+
       setCategoryTree((prevTree: any) => {
         const updatedTree = [...prevTree];
         const parentCategory = findParentCategoryForDelete(
@@ -651,88 +254,208 @@ export const Tree = ({ transitCount }: TreeProps) => {
         }
         return updatedTree;
       });
+      setClassLabel((prev: any) =>
+        Object.fromEntries(
+          Object.entries(prev).map((el: any) =>
+            el[0] === `label-${idInput}`
+              ? [el[0], el[1].split("parent").join("")]
+              : el
+          )
+        )
+      );
     } else {
-      (e.currentTarget.parentElement as HTMLFormElement).reset();
+      const tempName = (
+        e.currentTarget.parentElement?.firstChild
+          ?.firstChild as HTMLInputElement
+      ).name;
+      setInputValue((prev: any) => concatObject(prev, tempName, ""));
     }
   }
 
   function onEditClick(e: React.MouseEvent<HTMLButtonElement, MouseEvent>) {
-    onSubmit(e);
-    // (e.currentTarget.parentElement?.firstChild as HTMLInputElement).value = state[`${(e.currentTarget as HTMLButtonElement).id}`];
-    // document.querySelector(`#${(e.currentTarget as HTMLButtonElement).id}`)?.classList.add('edit')
-    // (e.currentTarget as Element).classList.add('edit')
-    const id = e.currentTarget.id;
+    const id = e.currentTarget.id.slice(8);
+    const input = document.querySelector(`#input-${id}`);
+if(input != null) {(input as HTMLInputElement).blur()}
+setFocused(false);
 
-    setCategoryTree((prevTree: any) => {
-      const updatedTree = [...prevTree];
-      const category = findCategoryById(updatedTree, id);
-      // console.log(category)
-      if (category) {
-        category.buttonAdd = true;
-        category.buttonEdit = true;
-        category.buttonDelete = true;
+    if (!(e.currentTarget as HTMLButtonElement).classList.contains("edit")) {
+      if ((input as HTMLInputElement).value === "") {
+        alert("You must enter the name!");
+        e.preventDefault();
+        (input as HTMLInputElement).focus();
+      } else {
+        setCategoryTree((prevTree: any) => {
+          const updatedTree = [...prevTree];
+          const category = findCategoryById(updatedTree, id);
+
+          if (category) {
+            category.buttonAdd = true;
+            category.buttonEdit = true;
+            category.buttonDelete = true;
+          }
+          return updatedTree;
+        });
+
+        setWidthInput((prev: any) =>
+          concatObject(
+            prev,
+            id,
+            `${(input as HTMLInputElement).value.length}ch`
+          )
+        );
+
+        setDisablessInput((prev: any) => concatObject(prev, id, true));
+        const backdrop = document.getElementById("backdrop");
+        if (backdrop != null) {
+          backdrop.style.pointerEvents = "auto";
+        }
       }
-      return updatedTree;
-    });
+      setDisablessBtn((prev: any) =>
+        Object.fromEntries(
+          Object.entries(prev).map((el: any) =>[el[0], false])
+        )
+      );
+
+    } else {
+      setCategoryTree((prevTree: any) => {
+        const updatedTree = [...prevTree];
+        const category = findCategoryById(updatedTree, id);
+
+        if (category) {
+          category.buttonEdit = false;
+          category.buttonDelete = false;
+        }
+        return updatedTree;
+      });
+
+      setDisablessInput((prev: any) => concatObject(prev, id, false));
+
+      setDisablessBtn((prev: any) =>
+        Object.fromEntries(
+          Object.entries(prev).map((el: any) =>
+            (el[0] !== `buttonE-${id}` || el[0] !== `buttonD-${id}`)
+              ? [el[0], true]
+              : el
+          )
+        )
+      );
+// setDisablessBtn((prev: any) => concatObject(prev, `buttonA-${newCategory.id}`, true));
+setDisablessBtn((prev: any) => concatObject(prev, `buttonE-${id}`, false));
+setDisablessBtn((prev: any) => concatObject(prev, `buttonD-${id}`, false));
+
+
+
+// setDisablessBtn
+// const btns = Array.from(document.querySelectorAll('.btn'))
+// btns.map((i: any) => (i.id !== `buttonE-${id}` || i.id !== `buttonD-${id}`) && i.setAttribute('disabled', 'true'))
+    }
   }
 
-  // function checkValue(id: string) {
-  // !state[`${id}`] ? '' : state[`${id}`]
-  // }
+  function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
+    setInputValue((prev: any) =>
+      concatObject(prev, e.target.name, e.target.value)
+    );
 
-  const renderCategory = useMemo(
-    () => (category: any) => {
-    // console.log(category)
-    // setTimeout(() => setNet(category), 50);
+    setWidthInput((prev: any) =>
+      concatObject(
+        prev,
+        e.target.id.slice(5),
+        `${(e.target as HTMLInputElement).value.length}ch`
+      )
+    );
 
+    setNet();
+  }
+  const renderCategory = (category: any, colorForLabel: any) => {
     return (
-      <Column key={nanoid()} id={`column-${category.id}`} className="column">
-        <Block
-          className={"block"}
-          // onSubmit={(e: React.FormEvent<HTMLFormElement>) => onSubmit(e)}
-          id={`block-${category.id}`}
-        >
-          <Label id={`label-${category.id}`} className="label">
+      <Column
+        key={nanoid()}
+        id={`column-${category.id}`}
+        className="column"
+        data-gap={columnGap[`${category.id}`]}
+      >
+        <Block className={"block"} id={`block-${category.id}`}>
+          <Label
+            id={`label-${category.id}`}
+            className={classLabel[`label-${category.id}`]}
+          >
             <Input
+              onChange={handleChange}
               type="text"
               name={category.id}
-              id={category.id}
-              autoFocus
-              // value={() => checkValue(category.id)}
-              // defaultValue={category.id === 'first' ? "Categories" : "Category Name"}
+              id={`input-${category.id}`}
+              autoFocus={category.id === "first" ? false : true}
+              value={inputValue[`${category.id}`]}
               placeholder={
-                category.id === "first" ? "Categories" : "Category Name"
+                category.id === "first"
+                  ? "Categories"
+                  : `${type.charAt(0).toUpperCase() + type.slice(1)} name`
               }
-              // onClick={(e: React.ChangeEvent<HTMLInputElement>) => handleChange(e)
-              // }
-              // onFocus={(e: React.FocusEvent<HTMLInputElement, Element>) =>
-              //   (e.target.value = "")
-              // }
-              disabled={category.id === "first" ? true : false}
+              data-background-color={
+                category.id === "first" || !inputValue[`${category.id}`]
+                  ? "white"
+                  : colorForLabel
+              }
+              data-color={category.id === "first" ? "black" : "white"}
+              disabled={
+                category.id === "first"
+                  ? true
+                  : false
+              }
+            style={{
+              // display: `${category.id === "first" && "none"}`,
+              pointerEvents: category.id === "first" || disablessInput[`${category.id}`]
+                ? "none"
+                : "auto",
+            }}
+
+              width={widthInput[`${category.id}`]}
             />
           </Label>
           <ButtonAdd
+            id={`buttonA-${category.id}`}
             type="button"
-            // style={{ display: `${category.id !== "first" ? "none" : 'flex'}` }}
             className={
               category.id !== "first" && !category.buttonAdd
                 ? "btn is-hidden"
                 : "btn"
             }
             onClick={(e: React.MouseEvent<HTMLButtonElement, MouseEvent>) =>
-              handleAddCategory(e, category.id)
+              handleAddCategory(e, category.id, category.globalLine)
             }
+            style={{
+              // display: `${category.id === "first" && "none"}`,
+              pointerEvents: disablessBtn[`buttonA-${category.id}`]
+                ? "none"
+                : "auto",
+            }}
+
+              // disabled={
+              //   disablessBtn[`buttonA-${category.id}`]
+              //     ? true
+              //     : false
+              // }
           >
             <IconAdd />
           </ButtonAdd>
           <ButtonEdit
-            id={category.id}
-            type="button"
-            style={{ display: `${category.id === "first" && "none"}` }}
+            id={`buttonE-${category.id}`}
+            type="submit"
+            style={{
+              display: `${category.id === "first" && "none"}`,
+              pointerEvents: disablessBtn[`buttonE-${category.id}`]
+                ? "none"
+                : "auto",
+            }}
             className={category.buttonEdit ? "btn edit" : "btn"}
             onClick={(e: React.MouseEvent<HTMLButtonElement, MouseEvent>) =>
               onEditClick(e)
             }
+              // disabled={
+              //   disablessBtn[`buttonE-${category.id}`]
+              //     ? true
+              //     : false
+              // }
           >
             <IconEdit
               style={{ display: `${!category.buttonEdit && "none"}` }}
@@ -740,179 +463,188 @@ export const Tree = ({ transitCount }: TreeProps) => {
             <IconDone style={{ display: `${category.buttonEdit && "none"}` }} />
           </ButtonEdit>
           <ButtonDelete
-            id={category.id}
+            id={`buttonD-${category.id}`}
             type="button"
-            style={{ display: `${category.id === "first" && "none"}` }}
+            style={{
+              display: `${category.id === "first" && "none"}`,
+              pointerEvents: disablessBtn[`buttonD-${category.id}`]
+                ? "none"
+                : "auto",
+            }}
             className={category.buttonDelete ? "btn delete" : "btn"}
             onClick={(e: React.MouseEvent<HTMLButtonElement, MouseEvent>) =>
               onDeleteClick(e)
             }
+              // disabled={
+              //   disablessBtn[`buttonD-${category.id}`]
+              //     ? true
+              //     : false
+              // }
           >
             <IconDelete />
           </ButtonDelete>
         </Block>
-
         {category.children.length > 0 && (
           <Line
             id={`line-${category.id}`}
             className="line"
-            width={width}
-            left={left}
+            width={width[`line-${category.id}`]}
+            left={left[`line-${category.id}`]}
           >
-            {category.children.map((child: any) => renderCategory(child))}
+            {category.children.map((child: any) =>
+              renderCategory(child, color[`${category.globalLine}`])
+            )}
           </Line>
         )}
       </Column>
     );
-  },
-    []
-  );
+  };
 
-useEffect(() => {
-setNet()
-}, [categoryTree])
+  const setNet = useCallback(() => {
+    const labels = document.querySelectorAll("label");
+    if (labels != null) {
+      for (const label of labels) {
+        if ((label as HTMLLabelElement).id !== "label-first") {
+          setClassLabel((prev: any) => concatObject(prev, label.id, "child"));
+        }
+        if ((label?.parentElement as HTMLFormElement).nextSibling) {
+          setClassLabel((prev: any) =>
+            concatObject(prev, label.id, "parent child")
+          );
+        }
 
-const setNet = () => {
-  const lines = document.getElementsByClassName("line");
-  let leftMin = Infinity;
-  let leftMax = -Infinity;
-
-  for (let i = 0; i < lines.length; i++) {
-    const line = lines[i] as HTMLElement;
-    const rect = line.getBoundingClientRect();
-
-    if (rect.left < leftMin) {
-      leftMin = rect.left;
+        if (
+          (label?.parentElement as HTMLFormElement).nextSibling &&
+          (label as HTMLLabelElement).id === "label-first"
+        ) {
+          setClassLabel((prev: any) => concatObject(prev, label.id, "parent"));
+        }
+      }
     }
+    const lines = document.querySelectorAll(".line");
 
-    if (rect.right > leftMax) {
-      leftMax = rect.right;
+    if (lines != null) {
+      for (const line of lines) {
+        setColumnGap((prev: any) =>
+          concatObject(prev, line.id.slice(5), "70px")
+        );
+
+        const labelZero = (
+          line.children[0].firstChild?.firstChild as HTMLLabelElement
+        ).getBoundingClientRect();
+        const labelPrev = (
+          line.previousSibling?.firstChild as HTMLLabelElement
+        ).getBoundingClientRect();
+
+        const lineDiv = (line as HTMLDivElement).getBoundingClientRect();
+
+        let tempLeft =
+          (labelZero.right - labelZero.left) / 2 +
+          (labelZero.left - lineDiv.left);
+
+        if (line.children.length === 1) {
+          let tempWidth =
+            (labelPrev.right + labelPrev.left) / 2 -
+            (labelZero.right + labelZero.left) / 2;
+          if (tempWidth < 0) {
+            tempWidth *= -1;
+            tempLeft -= tempWidth;
+          }
+
+          if (Math.floor(tempWidth) === 0) {
+            setClassLabel((prev: any) =>
+              Object.fromEntries(
+                Object.entries(prev).map((el: any) =>
+                  el[0] === `${line.id.slice(5)}`
+                    ? [el[0], el[1].split("child").join("")]
+                    : el
+                )
+              )
+            );
+            setColumnGap((prev: any) =>
+              Object.fromEntries(
+                Object.entries(prev).map((el: any) =>
+                  el[0] === `${line.id.slice(5)}` ? [el[0], "35px"] : el
+                )
+              )
+            );
+          }
+          setWidth((prev: any) =>
+            concatObject(
+              prev,
+              `${line.id}`,
+              `${(tempWidth / zoomValue) * 100}px`
+            )
+          );
+
+          setLeft((prev: any) =>
+            concatObject(
+              prev,
+              `${line.id}`,
+              `${(tempLeft / zoomValue) * 100}px`
+            )
+          );
+        }
+        if (line.children.length === 2) {
+          const labelNext = (
+            line.children[1].firstChild?.firstChild as HTMLLabelElement
+          ).getBoundingClientRect();
+
+          let tempWidth =
+            (labelNext.right + labelNext.left) / 2 -
+            (labelZero.right + labelZero.left) / 2;
+          if (tempWidth < 0) {
+            tempWidth *= -1;
+            tempLeft -= tempWidth;
+          }
+          setWidth((prev: any) => {
+            let obj: any = {};
+            obj[`${line.id}`] = `${(tempWidth / zoomValue) * 100}px`;
+            return Object.assign({}, prev, obj);
+
+            // concatObject(prev, `${line.id}`, widthValue);
+          });
+          setLeft((prev: any) => {
+            let obj: any = {};
+            obj[`${line.id}`] = `${(tempLeft / zoomValue) * 100}px`;
+            return Object.assign({}, prev, obj);
+
+            // concatObject(prev, `${line.id}`, `${(tempLeft / zoomValue) * 100}px`);
+          });
+        }
+
+        if (line.children.length > 2) {
+          const labelLast = (
+            line.lastChild?.firstChild?.firstChild as HTMLLabelElement
+          ).getBoundingClientRect();
+
+          let tempWidth =
+            (labelLast.right + labelLast.left) / 2 -
+            (labelZero.right + labelZero.left) / 2;
+
+          if (tempWidth < 0) {
+            tempWidth *= -1;
+            tempLeft -= tempWidth;
+          }
+
+          setWidth((prev: any) => {
+            let obj: any = {};
+            obj[`${line.id}`] = `${(tempWidth / zoomValue) * 100}px`;
+            return Object.assign({}, prev, obj);
+
+            // concatObject(prev, `${line.id}`, `${(tempWidth / zoomValue) * 100}px`);
+          });
+          setLeft((prev: any) => {
+            let obj: any = {};
+            obj[`${line.id}`] = `${(tempLeft / zoomValue) * 100}px`;
+            return Object.assign({}, prev, obj);
+
+            // concatObject(prev, `${line.id}`, `${(tempLeft / zoomValue) * 100}px`);
+          });
+        }
+      }
     }
-  }
-
-  const newWidth = `${leftMax - leftMin}px`;
-  const newLeft = `${leftMin}px`;
-
-  setWidth(newWidth);
-  setLeft(newLeft);
-};
-
-
-//   function setNet(category: any) {
-//     // console.log(category)
-//     // debugger
-//     const block = document.querySelector<HTMLElement>(`#block-${category.id}`);
-//     const label = document.querySelector<HTMLElement>(`#label-${category.id}`);
-//     const line = document.querySelector<HTMLElement>(`#line-${category.id}`);
-
-//     console.log(line);
-//     if (block != null && label != null) {
-//       if (category.id === "first") {
-//         label.classList.add("firstBlock");
-//       }
-//       if (category.id !== "first") {
-//         label.classList.add("child");
-//       }
-//       if (block?.nextSibling) {
-//         label.classList.add("parent");
-//       }
-//     }
-
-//     if (block != null && line != null) {
-//       if (line?.children.length === 1) {
-//         const left =
-//           ((
-//             line.children[0].firstChild?.firstChild as HTMLLabelElement
-//           ).getBoundingClientRect().right -
-//             (
-//               line.children[0].firstChild?.firstChild as HTMLLabelElement
-//             ).getBoundingClientRect().left) /
-//           2;
-//         const width =
-//           ((
-//             line.previousSibling?.firstChild as HTMLLabelElement
-//           ).getBoundingClientRect().right +
-//             (
-//               line.previousSibling?.firstChild as HTMLLabelElement
-//             ).getBoundingClientRect().left) /
-//             2 -
-//           ((
-//             line.children[0].firstChild?.firstChild as HTMLLabelElement
-//           ).getBoundingClientRect().right +
-//             (
-//               line.children[0].firstChild?.firstChild as HTMLLabelElement
-//             ).getBoundingClientRect().left) /
-//             2;
-//         console.log(line.previousSibling?.firstChild as HTMLLabelElement);
-//         setWidth(`${width}px`);
-//         setLeft(`${left}px`);
-//       }
-//       if (line?.children.length === 2) {
-//         console.log(
-//           line.children[0].firstChild?.firstChild as HTMLLabelElement
-//         );
-//         console.log(
-//           line.children[1].firstChild?.firstChild as HTMLLabelElement
-//         );
-
-//         const left =
-//           ((
-//             line.children[0].firstChild?.firstChild as HTMLLabelElement
-//           ).getBoundingClientRect().right -
-//             (
-//               line.children[0].firstChild?.firstChild as HTMLLabelElement
-//             ).getBoundingClientRect().left) /
-//           2;
-//         const width =
-//           ((
-//             line.children[1].firstChild?.firstChild as HTMLLabelElement
-//           ).getBoundingClientRect().right +
-//             (
-//               line.children[1].firstChild?.firstChild as HTMLLabelElement
-//             ).getBoundingClientRect().left) /
-//             2 -
-//           ((
-//             line.children[0].firstChild?.firstChild as HTMLLabelElement
-//           ).getBoundingClientRect().right +
-//             (
-//               line.children[0].firstChild?.firstChild as HTMLLabelElement
-//             ).getBoundingClientRect().left) /
-//             2;
-
-//         setWidth(`${width}px`);
-//         setLeft(`${left}px`);
-//       }
-
-//       if (line?.children.length > 2) {
-//         const left =
-//           ((
-//             line.children[0].firstChild?.firstChild as HTMLLabelElement
-//           ).getBoundingClientRect().right -
-//             (
-//               line.children[0].firstChild?.firstChild as HTMLLabelElement
-//             ).getBoundingClientRect().left) /
-//           2;
-//         const width =
-//           ((
-//             line.lastChild?.firstChild?.firstChild as HTMLLabelElement
-//           ).getBoundingClientRect().right +
-//             (
-//               line.lastChild?.firstChild?.firstChild as HTMLLabelElement
-//             ).getBoundingClientRect().left) /
-//             2 -
-//           ((
-//             line.children[0].firstChild?.firstChild as HTMLLabelElement
-//           ).getBoundingClientRect().right +
-//             (
-//               line.children[0].firstChild?.firstChild as HTMLLabelElement
-//             ).getBoundingClientRect().left) /
-//             2;
-
-//         setWidth(`${width}px`);
-//         setLeft(`${left}px`);
-//       }
-//     }
-//   }
+  }, [zoomValue]);
 
   function dragStart(e: React.DragEvent<HTMLDivElement>) {
     setXStart(e.clientX);
@@ -955,6 +687,9 @@ const setNet = () => {
     }
   }
 
+  useEffect(() => {
+    setNet();
+  }, [setNet, categoryTree]);
 
   return (
     <Wrapper
@@ -964,8 +699,9 @@ const setNet = () => {
       onDragEnd={dragEnd}
     >
       <Column>
-        {categoryTree.map((category) => renderCategory(category))}
+        {categoryTree.map((category) => renderCategory(category, ""))}
       </Column>
+      {modalVisibility[0] && <Modal type={onType} />}
     </Wrapper>
   );
 };

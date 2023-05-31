@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import {
   Wrapper,
   ButtonAdd,
@@ -38,6 +38,7 @@ export const Tree = ({ transitCount, zoomValue }: TreeProps) => {
     1: firstColor,
   });
   const [disablessInput, setDisablessInput] = useState<any>({});
+  const [disablessBtn, setDisablessBtn] = useState<any>({ 'buttonA-first': false });
   const [widthInput, setWidthInput] = useState<any>({});
   const [inputValue, setInputValue] = useState<any>({ first: "Categories" });
   const [columnGap, setColumnGap] = useState<any>({ first: "70px" });
@@ -58,6 +59,8 @@ export const Tree = ({ transitCount, zoomValue }: TreeProps) => {
       children: [],
     },
   ]);
+const [focused, setFocused] = useState<boolean>(false);
+const [currentCategoryId, setCurrentCategoryId] = useState<string>('');
 
   function countParents(e: React.MouseEvent<HTMLButtonElement, MouseEvent>) {
     let parent: any = e.target;
@@ -115,7 +118,45 @@ export const Tree = ({ transitCount, zoomValue }: TreeProps) => {
       }
       return updatedTree;
     });
+      setDisablessBtn((prev: any) =>
+        Object.fromEntries(
+          Object.entries(prev).map((el: any) =>
+            (el[0] !== `buttonE-${newCategory.id}` || el[0] !== `buttonD-${newCategory.id}`)
+              ? [el[0], true]
+              : el
+          )
+        )
+      );
+setDisablessBtn((prev: any) => concatObject(prev, `buttonA-${newCategory.id}`, true));
+setDisablessBtn((prev: any) => concatObject(prev, `buttonE-${newCategory.id}`, false));
+setDisablessBtn((prev: any) => concatObject(prev, `buttonD-${newCategory.id}`, false));
+
+        setDisablessInput((prev: any) => concatObject(prev, newCategory.id, false));
+
+setCurrentCategoryId(newCategory.id)
+setFocused(true)
+
   };
+
+useEffect(() => {
+if(!focused) {
+return
+}
+
+const checkFocus = (e: MouseEvent) => {
+
+if((e.target as HTMLButtonElement).id !== `input-${currentCategoryId}` || (e.target as HTMLButtonElement).id !== `buttonE-${currentCategoryId}` || (e.target as HTMLButtonElement).id !== `buttonD-${currentCategoryId}`) {
+const input = document.getElementById(`input-${currentCategoryId}`);
+if(input != null) {(input as HTMLInputElement).focus()}
+}
+}
+
+
+window.addEventListener('click', checkFocus)
+return () => window.removeEventListener('click', checkFocus)
+
+}, [currentCategoryId, focused])
+
 
   const onType = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
     setModalVisibility((prev: any) =>
@@ -170,26 +211,29 @@ export const Tree = ({ transitCount, zoomValue }: TreeProps) => {
         count = count + 1;
       }
       if (category[i].children.length > 0) {
-        findServices(category[i].children, count);
+        count = findServices(category[i].children, count);
       }
     }
-    console.log(count);
-    if (count > 0) {
-      transitCount(-1 * count);
-    }
+    return count;
   };
 
   function onDeleteClick(e: React.MouseEvent<HTMLButtonElement, MouseEvent>) {
-console.log('click')
     const idInput = (
-      (e.currentTarget as HTMLButtonElement).parentElement?.parentElement?.parentElement?.parentElement
-        ?.firstChild as Element
+      (e.currentTarget as HTMLButtonElement).parentElement?.parentElement
+        ?.parentElement?.parentElement?.firstChild as Element
     ).id.slice(6);
-    const idButton = ((e.currentTarget as HTMLButtonElement).previousSibling as Element).id.slice(8);
+    const idButton = (
+      (e.currentTarget as HTMLButtonElement).previousSibling as Element
+    ).id.slice(8);
     if (
-      ((e.currentTarget as HTMLButtonElement).previousSibling as Element).classList.contains("edit")
+      (
+        (e.currentTarget as HTMLButtonElement).previousSibling as Element
+      ).classList.contains("edit")
     ) {
-      findServices([findCategoryById(categoryTree, idButton)], 0);
+      const count = findServices([findCategoryById(categoryTree, idButton)], 0);
+      if (count > 0) {
+        transitCount(-1 * count);
+      }
 
       setCategoryTree((prevTree: any) => {
         const updatedTree = [...prevTree];
@@ -227,6 +271,8 @@ console.log('click')
   function onEditClick(e: React.MouseEvent<HTMLButtonElement, MouseEvent>) {
     const id = e.currentTarget.id.slice(8);
     const input = document.querySelector(`#input-${id}`);
+if(input != null) {(input as HTMLInputElement).blur()}
+setFocused(false);
 
     if (!(e.currentTarget as HTMLButtonElement).classList.contains("edit")) {
       if ((input as HTMLInputElement).value === "") {
@@ -254,13 +300,21 @@ console.log('click')
           )
         );
 
-        setDisablessInput((prev: any) => concatObject(prev, `input-${id}`, true));
+        setDisablessInput((prev: any) => concatObject(prev, id, true));
         const backdrop = document.getElementById("backdrop");
         if (backdrop != null) {
           backdrop.style.pointerEvents = "auto";
         }
       }
+      setDisablessBtn((prev: any) =>
+        Object.fromEntries(
+          Object.entries(prev).map((el: any) =>[el[0], false])
+        )
+      );
+
     } else {
+setFocused(true);
+
       setCategoryTree((prevTree: any) => {
         const updatedTree = [...prevTree];
         const category = findCategoryById(updatedTree, id);
@@ -272,7 +326,26 @@ console.log('click')
         return updatedTree;
       });
 
-      setDisablessInput((prev: any) => concatObject(prev, `input-${id}`, false));
+      setDisablessInput((prev: any) => concatObject(prev, id, false));
+
+      setDisablessBtn((prev: any) =>
+        Object.fromEntries(
+          Object.entries(prev).map((el: any) =>
+            (el[0] !== `buttonE-${id}` || el[0] !== `buttonD-${id}`)
+              ? [el[0], true]
+              : el
+          )
+        )
+      );
+// setDisablessBtn((prev: any) => concatObject(prev, `buttonA-${newCategory.id}`, true));
+setDisablessBtn((prev: any) => concatObject(prev, `buttonE-${id}`, false));
+setDisablessBtn((prev: any) => concatObject(prev, `buttonD-${id}`, false));
+
+
+
+// setDisablessBtn
+// const btns = Array.from(document.querySelectorAll('.btn'))
+// btns.map((i: any) => (i.id !== `buttonE-${id}` || i.id !== `buttonD-${id}`) && i.setAttribute('disabled', 'true'))
     }
   }
 
@@ -323,7 +396,7 @@ console.log('click')
               }
               data-color={category.id === "first" ? "black" : "white"}
               disabled={
-                category.id === "first" || disablessInput[`input-${category.id}`]
+                category.id === "first" || disablessInput[`${category.id}`]
                   ? true
                   : false
               }
@@ -341,6 +414,18 @@ console.log('click')
             onClick={(e: React.MouseEvent<HTMLButtonElement, MouseEvent>) =>
               handleAddCategory(e, category.id, category.globalLine)
             }
+            style={{
+              // display: `${category.id === "first" && "none"}`,
+              pointerEvents: disablessBtn[`buttonA-${category.id}`]
+                ? "none"
+                : "auto",
+            }}
+
+              // disabled={
+              //   disablessBtn[`buttonA-${category.id}`]
+              //     ? true
+              //     : false
+              // }
           >
             <IconAdd />
           </ButtonAdd>
@@ -349,15 +434,19 @@ console.log('click')
             type="submit"
             style={{
               display: `${category.id === "first" && "none"}`,
-              pointerEvents: document.activeElement?.id !== `input-'+${category.id}`
+              pointerEvents: disablessBtn[`buttonE-${category.id}`]
                 ? "none"
                 : "auto",
             }}
             className={category.buttonEdit ? "btn edit" : "btn"}
             onClick={(e: React.MouseEvent<HTMLButtonElement, MouseEvent>) =>
               onEditClick(e)
-
             }
+              // disabled={
+              //   disablessBtn[`buttonE-${category.id}`]
+              //     ? true
+              //     : false
+              // }
           >
             <IconEdit
               style={{ display: `${!category.buttonEdit && "none"}` }}
@@ -369,9 +458,7 @@ console.log('click')
             type="button"
             style={{
               display: `${category.id === "first" && "none"}`,
-              pointerEvents: document
-                .getElementById(`input-'+${category.id}`)
-                ?.focus()
+              pointerEvents: disablessBtn[`buttonD-${category.id}`]
                 ? "none"
                 : "auto",
             }}
@@ -379,6 +466,11 @@ console.log('click')
             onClick={(e: React.MouseEvent<HTMLButtonElement, MouseEvent>) =>
               onDeleteClick(e)
             }
+              // disabled={
+              //   disablessBtn[`buttonD-${category.id}`]
+              //     ? true
+              //     : false
+              // }
           >
             <IconDelete />
           </ButtonDelete>
@@ -399,11 +491,7 @@ console.log('click')
     );
   };
 
-  useEffect(() => {
-    setNet();
-  }, [categoryTree]);
-
-  function setNet() {
+  const setNet = useCallback(() => {
     const labels = document.querySelectorAll("label");
     if (labels != null) {
       for (const label of labels) {
@@ -473,11 +561,19 @@ console.log('click')
             );
           }
           setWidth((prev: any) =>
-            concatObject(prev, line.id, `${(tempWidth / zoomValue) * 100}px`)
+            concatObject(
+              prev,
+              `${line.id}`,
+              `${(tempWidth / zoomValue) * 100}px`
+            )
           );
 
           setLeft((prev: any) =>
-            concatObject(prev, line.id, `${(tempLeft / zoomValue) * 100}px`)
+            concatObject(
+              prev,
+              `${line.id}`,
+              `${(tempLeft / zoomValue) * 100}px`
+            )
           );
         }
         if (line.children.length === 2) {
@@ -492,12 +588,19 @@ console.log('click')
             tempWidth *= -1;
             tempLeft -= tempWidth;
           }
-
           setWidth((prev: any) => {
-            concatObject(prev, line.id, `${(tempWidth / zoomValue) * 100}px`);
+            let obj: any = {};
+            obj[`${line.id}`] = `${(tempWidth / zoomValue) * 100}px`;
+            return Object.assign({}, prev, obj);
+
+            // concatObject(prev, `${line.id}`, widthValue);
           });
           setLeft((prev: any) => {
-            concatObject(prev, line.id, `${(tempLeft / zoomValue) * 100}px`);
+            let obj: any = {};
+            obj[`${line.id}`] = `${(tempLeft / zoomValue) * 100}px`;
+            return Object.assign({}, prev, obj);
+
+            // concatObject(prev, `${line.id}`, `${(tempLeft / zoomValue) * 100}px`);
           });
         }
 
@@ -516,15 +619,23 @@ console.log('click')
           }
 
           setWidth((prev: any) => {
-            concatObject(prev, line.id, `${(tempWidth / zoomValue) * 100}px`);
+            let obj: any = {};
+            obj[`${line.id}`] = `${(tempWidth / zoomValue) * 100}px`;
+            return Object.assign({}, prev, obj);
+
+            // concatObject(prev, `${line.id}`, `${(tempWidth / zoomValue) * 100}px`);
           });
           setLeft((prev: any) => {
-            concatObject(prev, line.id, `${(tempLeft / zoomValue) * 100}px`);
+            let obj: any = {};
+            obj[`${line.id}`] = `${(tempLeft / zoomValue) * 100}px`;
+            return Object.assign({}, prev, obj);
+
+            // concatObject(prev, `${line.id}`, `${(tempLeft / zoomValue) * 100}px`);
           });
         }
       }
     }
-  }
+  }, [zoomValue]);
 
   function dragStart(e: React.DragEvent<HTMLDivElement>) {
     setXStart(e.clientX);
@@ -566,6 +677,10 @@ console.log('click')
       }
     }
   }
+
+  useEffect(() => {
+    setNet();
+  }, [setNet, categoryTree]);
 
   return (
     <Wrapper
