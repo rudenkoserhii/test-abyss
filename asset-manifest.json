@@ -1,0 +1,21 @@
+{
+  "files": {
+    "main.css": "/test-abyss/static/css/main.327de7c5.css",
+    "main.js": "/test-abyss/static/js/main.9f5eb49e.js",
+    "index.html": "/test-abyss/index.html",
+    "static/media/btn_edit.svg": "/test-abyss/static/media/btn_edit.d74f05a3b7c94229be003989bc2f34bf.svg",
+    "static/media/arrow_center.svg": "/test-abyss/static/media/arrow_center.256377fe86e2085b8a3de8b3b72c55b7.svg",
+    "static/media/btn_done.svg": "/test-abyss/static/media/btn_done.bb9e0682efcc444a746e15c39579cb26.svg",
+    "static/media/btn_x.svg": "/test-abyss/static/media/btn_x.c0601d26639f9f914856f6e87cbc8b94.svg",
+    "static/media/arrow_bottom.svg": "/test-abyss/static/media/arrow_bottom.c0d705d8aada4e40030780837a806deb.svg",
+    "static/media/arrow_left.svg": "/test-abyss/static/media/arrow_left.d518fb1c8c234b6003d4ffb68d4fa621.svg",
+    "static/media/arrow_right.svg": "/test-abyss/static/media/arrow_right.8afa4c760fc5ed2ac503146b94679c7d.svg",
+    "static/media/arrow_top.svg": "/test-abyss/static/media/arrow_top.9f51a7f1d32a5671c5f8bce40efb3b2f.svg",
+    "main.327de7c5.css.map": "/test-abyss/static/css/main.327de7c5.css.map",
+    "main.9f5eb49e.js.map": "/test-abyss/static/js/main.9f5eb49e.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.327de7c5.css",
+    "static/js/main.9f5eb49e.js"
+  ]
+}
