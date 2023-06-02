@@ -17,9 +17,14 @@ import {
 interface HeaderProps {
   serviceCount: number;
   transitZoomValue(value: number): any;
+  transitView(value: string): any;
 }
 
-export const Header = ({ serviceCount, transitZoomValue }: HeaderProps) => {
+export const Header = ({
+  serviceCount,
+  transitZoomValue,
+  transitView,
+}: HeaderProps) => {
   const valuesIn = [25, 30, 40, 50, 60, 70, 80, 90, 100, 125, 150];
   const valuesOut = [
     20, 30, 40, 50, 60, 70, 80, 90, 100, 110, 120, 130, 140, 150,
@@ -27,6 +32,8 @@ export const Header = ({ serviceCount, transitZoomValue }: HeaderProps) => {
 
   const [zoomValue, setZoomValue] = useState<number>(100);
   const [values, setValues] = useState<number[]>(valuesIn);
+
+  const [view, setView] = useState<string>("list view");
 
   useEffect(() => {
     transitZoomValue(zoomValue);
@@ -72,6 +79,15 @@ export const Header = ({ serviceCount, transitZoomValue }: HeaderProps) => {
     }
   }
 
+  function onClickView(e: React.MouseEvent<HTMLButtonElement, MouseEvent>) {
+    transitView(
+      (e.target as HTMLButtonElement).innerText.toLowerCase() === "list view"
+        ? "tree view"
+        : "list view"
+    );
+    setView(view === "list view" ? "tree view" : "list view");
+  }
+
   return (
     <Wrapper>
       <BoxLeft>
@@ -79,7 +95,7 @@ export const Header = ({ serviceCount, transitZoomValue }: HeaderProps) => {
         <Count>{serviceCount}</Count>
       </BoxLeft>
       <BoxRight>
-        <ButtonView>LIST VIEW</ButtonView>
+        <ButtonView onClick={onClickView}>{view.toUpperCase()}</ButtonView>
         <Center onClick={onCenter}>
           <CenterIcon />
         </Center>

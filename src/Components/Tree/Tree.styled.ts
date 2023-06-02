@@ -5,11 +5,11 @@ import { ReactComponent as Done } from "../../Assets/svg/btn_done.svg";
 
 export const BackDrop = styled.div`
   position: absolute;
-top: 0;
-left: 0;
+  top: 0;
+  left: 0;
 
   height: 100vh;
-width: 100vw;
+  width: 100vw;
 `;
 
 export const Wrapper = styled.div`
@@ -35,6 +35,8 @@ export const Block = styled.form`
   display: flex;
   align-items: center;
   justify-content: center;
+  flex-direction: ${(props: any) =>
+    props["data-view"] === "tree view" ? "column" : "row"};
   gap: 10px;
 `;
 
@@ -52,26 +54,41 @@ export const Line = styled.div<Props>`
   display: flex;
   align-items: flex-start;
   justify-content: center;
+  flex-direction: ${(props: any) =>
+    props["data-view"] === "tree view" ? "column" : "row"};
+
   gap: 10px;
 
   &::before {
     content: "";
     position: absolute;
-    left: ${(props: any) => props?.left};
-    top: -35px;
-    height: 2px;
-    width: ${(props: any) => props?.width};
+    left: ${(props: any) =>
+      props["data-view"] === "tree view" ? "-35px" : props?.left};
+    top: ${(props: any) =>
+      props["data-view"] === "tree view" ? props?.left : "-35px"};
+    height: ${(props: any) =>
+      props["data-view"] === "tree view" ? props?.width : "2px"};
+    width: ${(props: any) =>
+      props["data-view"] === "tree view" ? "2px" : props?.width};
     background-color: lightgray;
   }
 `;
 
 export const Column = styled.div`
   display: flex;
-  flex-direction: column;
+  flex-direction: ${(props: any) =>
+    props["data-view"] !== "tree view" ? "column" : "row"};
+  align-items: ${(props: any) =>
+    props["data-view"] === "tree view" ? "flex-start" : "center"};
+  justify-content: center;
+  gap: ${(props: any) => props["data-gap"]};
+`;
+
+export const BtnsBox = styled.div`
+  display: flex;
   align-items: center;
   justify-content: center;
-  gap: ${(props: any) => props['data-gap']};
-
+  gap: 10px;
 `;
 
 export const IconAdd = styled(Icon)`
@@ -148,16 +165,8 @@ export const ButtonEdit = styled.button`
 
   background-color: green;
 
-  /* & ${IconEdit} {
-display: none;
-    } */
-
   &.edit {
     background-color: lightgray;
-
-    /* & ${IconDone} {
-display: none;
-    } */
   }
 
   &:hover {
@@ -258,15 +267,16 @@ export const Input = styled.input`
   line-height: 0.8;
   text-align: center;
 
-  background-color:   ${(props: any) => props['data-background-color']};
-  color:   ${(props: any) => props['data-color']};
-&:focus, &:focus-within {
-background-color: white !important;
-color: black;
-}
-&:disabled {
-cursor: move;
-}
+  background-color: ${(props: any) => props["data-background-color"]};
+  color: ${(props: any) => props["data-color"]};
+  &:focus,
+  &:focus-within {
+    background-color: white !important;
+    color: black;
+  }
+  &:disabled {
+    cursor: move;
+  }
 `;
 
 export const Label = styled.label`
@@ -277,28 +287,38 @@ export const Label = styled.label`
   &.child::before {
     content: "";
     position: absolute;
-    left: 50%;
-    top: -35px;
-    width: 2px;
-    height: 35px;
+    left: ${(props: any) =>
+      props["data-view"] === "tree view" ? "-35px" : "50%"};
+    top: ${(props: any) =>
+      props["data-view"] === "tree view" ? "50%" : "-35px"};
+    width: ${(props: any) =>
+      props["data-view"] === "tree view" ? "35px" : "2px"};
+    height: ${(props: any) =>
+      props["data-view"] === "tree view" ? "2px" : "35px"};
     background-color: lightgray;
 
-    transform: translateX(-50%);
+    transform: ${(props: any) =>
+      props["data-view"] === "tree view"
+        ? "translateY(-50%)"
+        : "translateX(-50%)"};
   }
 
   &.parent::after {
     content: "";
     position: absolute;
-    left: 50%;
-    bottom: -35px;
-    width: 2px;
-    height: 35px;
+    left: ${(props: any) =>
+      props["data-view"] === "tree view" ? "calc(100%)" : "50%"};
+    bottom: ${(props: any) =>
+      props["data-view"] === "tree view" ? "50%" : "-35px"};
+    width: ${(props: any) =>
+      props["data-view"] === "tree view" ? "35px" : "2px"};
+    height: ${(props: any) =>
+      props["data-view"] === "tree view" ? "2px" : "35px"};
     background-color: lightgray;
 
-    transform: translateX(-50%);
+    transform: ${(props: any) =>
+      props["data-view"] === "tree view"
+        ? "translateY(50%)"
+        : "translateX(-50%)"};
   }
-
-&.alone {
-
-}
 `;

@@ -13,10 +13,11 @@ import { Tree } from "../Tree/Tree";
 
 interface MainProps {
   transitCount(value: number): any;
-zoomValue: number;
+  zoomValue: number;
+  view: string;
 }
 
-export const Main = ({ transitCount, zoomValue }: MainProps) => {
+export const Main = ({ transitCount, zoomValue, view }: MainProps) => {
   function onClickTop() {
     const tree = document.querySelector(".tree") as HTMLDivElement | null;
 
@@ -72,7 +73,7 @@ export const Main = ({ transitCount, zoomValue }: MainProps) => {
       <ButtonLeft onClick={onClickLeft}>
         <IconLeft />
       </ButtonLeft>
-      <Tree transitCount={transitCount} zoomValue={zoomValue}/>
+      <Tree transitCount={transitCount} zoomValue={zoomValue} view={view} />
     </Wrapper>
   );
 };
